@@ -147,6 +147,7 @@
 
     nerd-fonts.fira-code
     bottles
+    protontricks
 
 
   ]++ (with pkgs-stable; [
