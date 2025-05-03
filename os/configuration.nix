@@ -148,6 +148,7 @@
     nerd-fonts.fira-code
     bottles
     protontricks
+    pavucontrol
 
 
   ]++ (with pkgs-stable; [
