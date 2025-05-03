@@ -150,8 +150,8 @@
 
 
   ]++ (with pkgs-stable; [
-  wineWowPackages.stable
-  winetricks
+#  wineWowPackages.stable
+#  winetricks
 ]);
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
