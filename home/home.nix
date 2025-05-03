@@ -15,6 +15,24 @@
 	spotify
   ];
 
+    xdg.mimeApps = {
+      enable = true;
+      defaultApplications = {
+          # "application/xhtml+xml" = "${lib.getExe pkgs.microsoft-edge}/share/applications/firefox.desktop";
+          # "text/html" = "${lib.getExe pkgs.microsoft-edge}/share/applications/firefox.desktop";
+          # "text/xml" = "${lib.getExe pkgs.microsoft-edge}/share/applications/firefox.desktop";
+          # "x-scheme-handler/ftp" = "${lib.getExe pkgs.microsoft-edge}/share/applications/firefox.desktop";
+          # "x-scheme-handler/http" = "${lib.getExe pkgs.microsoft-edge}/share/applications/firefox.desktop";
+          # "x-scheme-handler/https" = "${lib.getExe pkgs.microsoft-edge}/share/applications/firefox.desktop";
+          "application/xhtml+xml" = "microsoft-edge.desktop";
+          "text/html" = "microsoft-edge.desktop";
+          "text/xml" = "microsoft-edge.desktop";
+          "x-scheme-handler/ftp" = "microsoft-edge.desktop";
+          "x-scheme-handler/http" = "microsoft-edge.desktop";
+          "x-scheme-handler/https" = "microsoft-edge.desktop";
+      };
+  };
+
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage
   # when a new Home Manager release introduces backwards
