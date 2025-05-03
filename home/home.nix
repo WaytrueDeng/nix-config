@@ -95,6 +95,11 @@
 	source = ./config/rofi;
 	recursive = true;
 	};
+	".config/nvim" = {
+	enable = true;
+	source = ./config/nvim;
+	recursive = true;
+	};
 
 
 
