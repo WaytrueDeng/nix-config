@@ -12,6 +12,7 @@
 	inkscape
 	fiji
 	git
+	spotify
   ];
 
   # This value determines the Home Manager release that your
