@@ -139,6 +139,12 @@
     q4wine
     wechat-uos
     wl-clipboard
+    gcc
+    R
+    python3Full
+    wine-wayland
+    nodejs_23
+    rustup
 
     nerd-fonts.fira-code
 
