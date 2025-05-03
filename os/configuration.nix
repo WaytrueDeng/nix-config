@@ -142,16 +142,18 @@
     gcc
     R
     python3Full
-    wine-wayland
     nodejs_23
     rustup
 
     nerd-fonts.fira-code
+    bottles
 
 
   ]++ (with pkgs-stable; [
 #  wineWowPackages.stable
 #  winetricks
+wine
+winetricks
 ]);
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
