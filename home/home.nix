@@ -18,8 +18,7 @@
     spotify
     unzip
     zellij
-    onedrive
-    onedrivegui
+    onedrive onedrivegui
     lutris-unwrapped
     hyprshot
     rustdesk
@@ -94,9 +93,10 @@
     enableNushellIntegration = true;
   };
 
+
+
   fonts.fontconfig = {
-    enable = true;
-    defaultFonts = {
+    enable = true; defaultFonts = {
       monospace = [
         "LXGW WenKai Mono"
         "Noto Sans Mono CJK SC"
@@ -123,16 +123,15 @@
       source = ./config/rofi;
       recursive = true;
     };
-    ".config/nvim" = {
-      enable = true;
-      source = ./config/nvim;
-      recursive = true;
-    };
   };
 
   services.mako = {
     enable = true;
     defaultTimeout = 5;
   };
+  imports =  [
+./nvf.nix
+        ];
   home.stateVersion = "25.05";
+
 }

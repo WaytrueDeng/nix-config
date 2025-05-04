@@ -26,14 +26,14 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
     stylix.url = "github:danth/stylix";
-
-
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    nvf.url = "github:notashelf/nvf";
+
 
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager,stylix,nixpkgs-stable, ... }: {
+  outputs = inputs@{ self, nixpkgs, home-manager,stylix,nixpkgs-stable,nvf, ... }: {
     nixosConfigurations.waytrue-desktop = nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";
             specialArgs = {
@@ -52,7 +52,6 @@
       stylix.nixosModules.stylix
 
       home-manager.nixosModules.home-manager
-
         ({ config, pkgs, nixpkgs-stable,... }: {
           # Allow unfree packages and insecure packages
           nixpkgs.config.allowUnfree = true;
@@ -62,7 +61,14 @@
             "clash-verge-rev-webui-2.2.3" 
             "clash-verge-rev-service-2.2.3" 
           ];
-
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.waytrue = {
+		imports = [
+	    ./home/home.nix
+	   nvf.homeManagerModules.default
+	    ];};
+            home-manager.backupFileExtension = "backup";
 
           # Optional: Explicitly include the package
           environment.systemPackages = [ pkgs.clash-verge-rev ];
@@ -72,22 +78,7 @@
             #    1. `nixConfig.substituters` in `flake.nix`
             nix.settings.trusted-users = [ "waytrue" ];
           }
-        ./os/configuration.nix
-	 home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.waytrue = {
-		imports = [
-	    ./home/home.nix
-	    ];};
-            home-manager.backupFileExtension = "backup";
-
-
-
-            # Optionally, use home-manager.extraSpecialArgs to pass
-            # arguments to home.nix
-          }
+       ./os/configuration.nix
       ];
     };
   };

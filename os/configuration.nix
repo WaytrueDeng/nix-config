@@ -37,7 +37,7 @@
   #   keyMap = "us";
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
-
+  time.timeZone = "Asia/Shanghai";
   security.doas.enable = true;
   security.sudo.enable = false;
   security.doas.extraRules = [
@@ -159,6 +159,7 @@
       bottles
       protontricks
       pavucontrol
+      tree-sitter
 
       wineWowPackages.stable
       winetricks
