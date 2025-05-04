@@ -25,14 +25,15 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    stylix.url = "github:danth/stylix";
+
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    catppuccin.url = "github:catppuccin/nix";
 
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager,catppuccin,nixpkgs-stable, ... }: {
+  outputs = inputs@{ self, nixpkgs, home-manager,stylix,nixpkgs-stable, ... }: {
     nixosConfigurations.waytrue-desktop = nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";
             specialArgs = {
@@ -48,6 +49,8 @@
         };
       };
       modules = [ 
+      stylix.nixosModules.stylix
+
       home-manager.nixosModules.home-manager
 
         ({ config, pkgs, nixpkgs-stable,... }: {
@@ -77,13 +80,6 @@
             home-manager.users.waytrue = {
 		imports = [
 	    ./home/home.nix
-            catppuccin.homeManagerModules.catppuccin {
-		catppuccin.enable = true;
-		catppuccin.flavor = "latte";
-
-	    }
-
-
 	    ];};
             home-manager.backupFileExtension = "backup";
 

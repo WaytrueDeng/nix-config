@@ -1,20 +1,23 @@
 # Edit this configuration file to define what should be installed on
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
-
-{ config, lib, pkgs,pkgs-stable, ... }:
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  config,
+  lib,
+  pkgs,
+  pkgs-stable,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  nix.settings.substituters = [ "https://mirrors.ustc.edu.cn/nix-channels/store" ];
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.substituters = ["https://mirrors.ustc.edu.cn/nix-channels/store"];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -26,7 +29,7 @@
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-	
+
   # Select internationalisation properties.
   # i18n.defaultLocale = "en_US.UTF-8";
   # console = {
@@ -35,20 +38,34 @@
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
 
-  fonts = {
-  packages = with pkgs; [
-    noto-fonts
-    noto-fonts-cjk-sans
-    noto-fonts-cjk-serif
-    # sarasa-gothic  #更纱黑体
-    source-code-pro
-    hack-font
-    jetbrains-mono
-    lxgw-wenkai
+  security.doas.enable = true;
+  security.sudo.enable = false;
+  security.doas.extraRules = [
+    {
+      users = ["waytrue"];
+      # Optional, retains environment variables while running commands
+      # e.g. retains your NIX_PATH when applying your config
+      keepEnv = true;
+      persist = true; # Optional, only require password verification a single time
+    }
   ];
+
+  stylix.enable = true;
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-latte.yaml";
+  fonts = {
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      # sarasa-gothic  #更纱黑体
+      source-code-pro
+      hack-font
+      jetbrains-mono
+      lxgw-wenkai
+    ];
     fontconfig = {
       defaultFonts = {
-        emoji = [ "Noto Color Emoji" ];
+        emoji = ["Noto Color Emoji"];
         monospace = [
           "Noto Sans Mono CJK SC"
           "Sarasa Mono SC"
@@ -66,31 +83,25 @@
         ];
       };
     };
-    };
+  };
 
   i18n.inputMethod = {
-   type = "fcitx5";
-   enable = true;
-   fcitx5.waylandFrontend = true;
-   fcitx5.addons = with pkgs; [
-     fcitx5-rime
-     fcitx5-gtk
-     rime-data
-
-   ];
- };
+    type = "fcitx5";
+    enable = true;
+    fcitx5.waylandFrontend = true;
+    fcitx5.addons = with pkgs; [
+      fcitx5-rime
+      fcitx5-gtk
+      rime-data
+    ];
+  };
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
-
-
-
-  
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -102,10 +113,10 @@
   # Enable sound.
   # services.pulseaudio.enable = true;
   # OR
- services.pipewire = {
-   enable = true;
-   pulse.enable = true;
- };
+  services.pipewire = {
+    enable = true;
+    pulse.enable = true;
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
@@ -113,7 +124,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.waytrue = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = ["wheel"]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
     ];
@@ -125,38 +136,37 @@
   programs.hyprland.enable = true; # enable Hyprland
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
-
-     
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
-    microsoft-edge
-    kitty
-    ghostty
-    q4wine
-    wechat-uos
-    wl-clipboard
-    gcc
-    R
-    python3Full
-    nodejs_23
-    rustup
+  environment.systemPackages = with pkgs;
+    [
+      vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+      wget
+      microsoft-edge
+      kitty
+      ghostty
+      q4wine
+      wechat-uos
+      wl-clipboard
+      gcc
+      R
+      python3Full
+      nodejs_23
+      cargo
+      rustc
 
-    nerd-fonts.fira-code
-    bottles
-    protontricks
-    pavucontrol
+      nerd-fonts.fira-code
+      bottles
+      protontricks
+      pavucontrol
 
-
-  ]++ (with pkgs-stable; [
-#  wineWowPackages.stable
-#  winetricks
-wine
-winetricks
-]);
+      wineWowPackages.stable
+      winetricks
+    ]
+    ++ (with pkgs-stable; [
+      #  wineWowPackages.stable
+      #  winetricks
+    ]);
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -199,6 +209,4 @@ winetricks
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "25.05"; # Did you read the comment?
-
 }
-
