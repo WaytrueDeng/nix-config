@@ -51,6 +51,7 @@
   ];
 
   stylix.enable = true;
+  stylix.targets.nvf.enable = false;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-latte.yaml";
   fonts = {
     packages = with pkgs; [
@@ -102,6 +103,8 @@
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
+
+  services.blueman.enable = true;
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -168,6 +171,7 @@
       #  wineWowPackages.stable
       #  winetricks
     ]);
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

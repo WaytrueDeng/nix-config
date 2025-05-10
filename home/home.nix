@@ -18,12 +18,17 @@
     spotify
     unzip
     zellij
-    onedrive onedrivegui
+    onedrive
+    onedrivegui
     lutris-unwrapped
     hyprshot
     rustdesk
+    neovim
+    affine
+    dig
+    tldr
+    feishin
   ];
-
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
@@ -82,6 +87,7 @@
     enable = true;
     shellAliases = {
       ns = "doas nixos-rebuild switch --flake /home/waytrue/Documents/nix-config#waytrue-desktop";
+      hmf = "nvim /home/waytrue/Documents/nix-config/home/home.nix";
     };
   };
   programs.starship = {
@@ -93,10 +99,9 @@
     enableNushellIntegration = true;
   };
 
-
-
   fonts.fontconfig = {
-    enable = true; defaultFonts = {
+    enable = true;
+    defaultFonts = {
       monospace = [
         "LXGW WenKai Mono"
         "Noto Sans Mono CJK SC"
@@ -123,15 +128,28 @@
       source = ./config/rofi;
       recursive = true;
     };
+    ".config/nvim" = {
+      enable = true;
+      source = ./config/nvim;
+      recursive = true;
+    };
   };
 
   services.mako = {
     enable = true;
-    defaultTimeout = 5;
+    defaultTimeout = "5";
   };
-  imports =  [
-./nvf.nix
-        ];
-  home.stateVersion = "25.05";
+  services.blueman-applet = {
+    enable = true;
+    # enableBluetooth = true;
+  };
 
+  imports = [./nvf.nix];
+  home.stateVersion = "25.05";
+       home = {
+         sessionVariables = {
+           XMODIFIERS = "@im=fcitx";  # Example: for Fcitx input method
+         };
+       };
 }
+

@@ -29,6 +29,7 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nvf.url = "github:notashelf/nvf";
+    nvf.inputs.nixpkgs.follows = "nixpkgs";
 
 
   };
@@ -36,7 +37,7 @@
   outputs = inputs@{ self, nixpkgs, home-manager,stylix,nixpkgs-stable,nvf, ... }: {
     nixosConfigurations.waytrue-desktop = nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";
-            specialArgs = {
+      specialArgs = {
         # To use packages from nixpkgs-stable,
         # we configure some parameters for it first
         pkgs-stable = import nixpkgs-stable {
@@ -47,12 +48,13 @@
           # installation of non-free software.
           config.allowUnfree = true;
         };
+
+        inherit inputs;
       };
       modules = [ 
       stylix.nixosModules.stylix
-
       home-manager.nixosModules.home-manager
-        ({ config, pkgs, nixpkgs-stable,... }: {
+        ({ config, pkgs, nixpkgs-stable,inputs,... }: {
           # Allow unfree packages and insecure packages
           nixpkgs.config.allowUnfree = true;
           nixpkgs.config.permittedInsecurePackages = [ 
@@ -60,24 +62,23 @@
             "clash-verge-rev-2.2.3" 
             "clash-verge-rev-webui-2.2.3" 
             "clash-verge-rev-service-2.2.3" 
+            "electron-33.4.11"
           ];
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.waytrue = {
 		imports = [
 	    ./home/home.nix
-	   nvf.homeManagerModules.default
+            inputs.nvf.homeManagerModules.default
 	    ];};
             home-manager.backupFileExtension = "backup";
 
           # Optional: Explicitly include the package
           environment.systemPackages = [ pkgs.clash-verge-rev ];
         })
-	          {
-            # given the users in this list the right to specify additional substituters via:
-            #    1. `nixConfig.substituters` in `flake.nix`
-            nix.settings.trusted-users = [ "waytrue" ];
-          }
+        {
+         nix.settings.trusted-users = [ "waytrue" ];
+        }
        ./os/configuration.nix
       ];
     };
