@@ -8,7 +8,7 @@ in
 {
   home.username = "waytrue";
   home.homeDirectory = lib.mkForce (if isDarwin then "/Users/waytrue" else "/home/waytrue"); 
-  nixpkgs.config.allowUnfree = true;
+
 
   home.packages = with pkgs; [
     fzf git unzip zellij neovim dig tldr zoxide 
@@ -30,7 +30,10 @@ in
   ]);
 
   programs.home-manager.enable = true;
-
+  
+  programs.aerospace = lib.mkIf isDarwin {
+    enable = true;
+  };
   programs.nushell = {
     enable = true;
     shellAliases = {
