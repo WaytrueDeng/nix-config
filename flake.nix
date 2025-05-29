@@ -44,7 +44,11 @@ darwinConfigurations."waytruedeMac-mini" = nix-darwin.lib.darwinSystem {
         inherit inputs;
         pkgs = nixpkgs.legacyPackages.aarch64-darwin;
       };
-	modules = [(./darwin/configuration.nix)
+	modules = [
+ ({ config, pkgs, ... }: {
+      nixpkgs.config.allowUnfree = true; # 关键：全局允许非自由包
+    })
+	(./darwin/configuration.nix)
 	home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

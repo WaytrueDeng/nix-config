@@ -7,12 +7,13 @@ in
 
 {
   home.username = "waytrue";
-  home.homeDirectory = if isDarwin then "/Users/waytrue" else "/home/waytrue";
+  home.homeDirectory = lib.mkForce (if isDarwin then "/Users/waytrue" else "/home/waytrue"); 
+  nixpkgs.config.allowUnfree = true;
 
   home.packages = with pkgs; [
-    fzf git unzip zellij neovim dig tldr
+    fzf git unzip zellij neovim dig tldr zoxide 
   ] ++ (if isDarwin then [
-    darwin.trash 
+    darwin.trash raycast wezterm
   ] else [
     # 确保以下包名有效：
     inkscape
@@ -38,14 +39,19 @@ in
     };
   };
 
+  programs.fish = {
+    enable = true;
+  };
   programs.starship = {
     enable = true;
     enableNushellIntegration = true;
+    enableFishIntegration = true;
   };
 
   programs.zoxide = {
     enable = true;
     enableNushellIntegration = true;
+    enableFishIntegration = true;
   };
 
   home.file = {

@@ -9,12 +9,10 @@
   self,
   ...
 }: {
-     environment.systemPackages =
-        [ pkgs.vim
-        ];
-   
       # Necessary for using flakes on this system.                                                       
       nix.settings.experimental-features = "nix-command flakes";                                         
+      nixpkgs.config.allowBroken = true;
+      environment.shells = [ pkgs.fish ];
                                                                                                          
       # Enable alternative shell support in nix-darwin.                                                  
       # programs.fish.enable = true;                                                                     
@@ -28,4 +26,12 @@
                                                                                                          
       # The platform the configuration will be used on.
       nixpkgs.hostPlatform = "aarch64-darwin";
+      programs.fish.enable = true;
+      users.users = {
+      waytrue = {
+
+      shell = pkgs.fish ;
+      };
+
+      };
 }
