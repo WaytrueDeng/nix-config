@@ -23,28 +23,35 @@
     ];
   };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
-    nixpkgs-pkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     stylix.url = "github:danth/stylix";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nvf.url = "github:notashelf/nvf";
     nvf.inputs.nixpkgs.follows = "nixpkgs";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs-pkgs";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
 
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager,stylix,nixpkgs-stable,nix-darwin,nixpkgs-pkgs,nvf, ... }: {
+  outputs = inputs@{ self, nixpkgs, home-manager,stylix,nixpkgs-stable,nix-darwin,nvf, ... }: {
 darwinConfigurations."waytruedeMac-mini" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
      specialArgs = {
+	inherit self;
         inherit inputs;
         pkgs = nixpkgs.legacyPackages.aarch64-darwin;
       };
-	modules = [(./darwin/configuration.nix)];
+	modules = [(./darwin/configuration.nix)
+	home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.waytrue = import ./home/home.nix;
+          }
+];
 
     };
     

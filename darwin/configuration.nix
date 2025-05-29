@@ -6,6 +6,7 @@
   lib,
   pkgs,
   pkgs-stable,
+  self,
   ...
 }: {
      environment.systemPackages =
