@@ -11,7 +11,7 @@ in
 
 
   home.packages = with pkgs; [
-    fzf git unzip zellij neovim dig tldr zoxide 
+    fzf git unzip zellij neovim dig tldr zoxide wget
   ] ++ (if isDarwin then [
     darwin.trash raycast wezterm
   ] else [
@@ -33,6 +33,7 @@ in
   
   programs.aerospace = lib.mkIf isDarwin {
     enable = true;
+    #userSettings = lib.trivial.importTOML ./config/aerospace/aerospace.toml;
   };
   programs.nushell = {
     enable = true;
