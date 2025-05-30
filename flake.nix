@@ -42,7 +42,6 @@ darwinConfigurations."waytruedeMac-mini" = nix-darwin.lib.darwinSystem {
      specialArgs = {
 	inherit self;
         inherit inputs;
-        pkgs = nixpkgs.legacyPackages.aarch64-darwin;
       };
 	modules = [
  ({ config, pkgs, ... }: {
@@ -53,7 +52,12 @@ darwinConfigurations."waytruedeMac-mini" = nix-darwin.lib.darwinSystem {
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.users.waytrue = import ./home/home.nix;
+            home-manager.users.waytrue = {
+            imports = [./home/home.nix 
+            inputs.nvf.homeManagerModules.default];
+            };
+
+
           }
 ];
 

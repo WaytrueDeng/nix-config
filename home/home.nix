@@ -1,39 +1,63 @@
-{ config, pkgs, lib, ... }:
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
-in
-
-{
+in {
   home.username = "waytrue";
-  home.homeDirectory = lib.mkForce (if isDarwin then "/Users/waytrue" else "/home/waytrue"); 
+  home.homeDirectory = lib.mkForce (
+    if isDarwin
+    then "/Users/waytrue"
+    else "/home/waytrue"
+  );
 
-
-  home.packages = with pkgs; [
-    fzf git unzip zellij neovim dig tldr zoxide wget
-  ] ++ (if isDarwin then [
-    darwin.trash raycast wezterm
-  ] else [
-    # 确保以下包名有效：
-    inkscape
-    lutris-unwrapped
-    hyprshot
-    rustdesk
-    onedrivegui
-    firefox
-    gcc
-    catppuccin-fcitx5
-    wpsoffice-cn
-    spotify
-    onedrive
-  ]);
+  home.packages = with pkgs;
+    [
+      fzf
+      git
+      unzip
+      zellij
+      kitty
+      neovim
+      dig
+      tldr
+      zoxide
+      wget
+      zotero
+      typst
+      feishin
+    ]
+    ++ (
+      if isDarwin
+      then [
+        darwin.trash
+        raycast
+        imagej
+      ]
+      else [
+        # 确保以下包名有效：
+        inkscape
+        lutris-unwrapped
+        hyprshot
+        rustdesk
+        onedrivegui
+        firefox
+        gcc
+        catppuccin-fcitx5
+        wpsoffice-cn
+        spotify
+        onedrive
+      ]
+    );
 
   programs.home-manager.enable = true;
-  
+
   programs.aerospace = lib.mkIf isDarwin {
     enable = true;
-    #userSettings = lib.trivial.importTOML ./config/aerospace/aerospace.toml;
+    userSettings = lib.trivial.importTOML ./config/aerospace/aerospace.toml;
   };
   programs.nushell = {
     enable = true;
@@ -61,10 +85,10 @@ in
   home.file = {
     ".config/waybar".source = ./config/waybar;
     ".config/rofi".source = ./config/rofi;
-    ".config/nvim".source = ./config/nvim;
+    #".config/nvim".source = ./config/nvim;
   };
 
-  #imports = [ ./nvf.nix ];
+  imports = [./nvf.nix];
   home.stateVersion = "25.05";
   home.sessionVariables.XMODIFIERS = "@im=fcitx";
 
@@ -88,16 +112,19 @@ in
     extraConfig = lib.fileContents ./config/hyprland.conf;
   };
 
-  programs.waybar = lib.mkIf isLinux { enable = true; };
-  programs.wlogout = lib.mkIf isLinux { enable = true; };
-  programs.rofi = lib.mkIf isLinux { enable = true; package = pkgs.rofi-wayland; };
+  programs.waybar = lib.mkIf isLinux {enable = true;};
+  programs.wlogout = lib.mkIf isLinux {enable = true;};
+  programs.rofi = lib.mkIf isLinux {
+    enable = true;
+    package = pkgs.rofi-wayland;
+  };
 
   fonts.fontconfig = lib.mkIf isLinux {
     enable = true;
     defaultFonts = {
-      monospace = [ "LXGW WenKai Mono" "Noto Sans Mono CJK SC" "Sarasa Mono SC" "DejaVu Sans Mono" ];
-      sansSerif = [ "LXGW WenKai" ];
-      serif = [ "DejaVu Serif" ];
+      monospace = ["LXGW WenKai Mono" "Noto Sans Mono CJK SC" "Sarasa Mono SC" "DejaVu Sans Mono"];
+      sansSerif = ["LXGW WenKai"];
+      serif = ["DejaVu Serif"];
     };
   };
 
