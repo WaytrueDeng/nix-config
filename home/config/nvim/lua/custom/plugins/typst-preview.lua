@@ -1,3 +1,10 @@
+require("lspconfig")["tinymist"].setup {
+  settings = {
+    formatterMode = "typstyle",
+    exportPdf = "onType",
+    semanticTokens = "disable",
+  },
+}
 return {
   "chomosuke/typst-preview.nvim",
   ft = "typst",
