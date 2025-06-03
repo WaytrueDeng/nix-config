@@ -6,6 +6,7 @@ return {
       "nvim-orgmode/orgmode",
       tag = "0.3.7",
       event = "VeryLazy",
+      layzy = true,
       ft = { "org" },
       config = function()
         -- Setup orgmode
@@ -16,10 +17,9 @@ return {
 
         -- NOTE: If you are using nvim-treesitter with ~ensure_installed = "all"~ option
         -- add ~org~ to ignore_install
-        -- require('nvim-treesitter.configs').setup({
-        --   ensure_installed = 'all',
-        --   ignore_install = { 'org' },
-        -- })
+        require("nvim-treesitter.configs").setup {
+          ignore_install = { "org" },
+        }
       end,
     },
   },

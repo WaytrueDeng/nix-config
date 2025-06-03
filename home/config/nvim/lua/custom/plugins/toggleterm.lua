@@ -1,4 +1,8 @@
 return {
-  -- amongst your other plugins
-  { "akinsho/toggleterm.nvim", version = "*", config = true },
+  "akinsho/toggleterm.nvim",
+  version = "*",
+  config = true,
+  keys = {
+    { "<C-'>", "<cmd>ToggleTerm<cr>", mode = { "n", "t" }, desc = "toggle term" },
+  },
 }

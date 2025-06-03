@@ -16,6 +16,7 @@ in {
 
   home.packages = with pkgs;
     [
+      btop
       fzf
       git
       unzip
@@ -29,6 +30,9 @@ in {
       zotero
       typst
       feishin
+      eza
+      fastfetch
+			spotify
     ]
     ++ (
       if isDarwin
@@ -85,10 +89,10 @@ in {
   home.file = {
     ".config/waybar".source = ./config/waybar;
     ".config/rofi".source = ./config/rofi;
-    #".config/nvim".source = ./config/nvim;
+    ".config/nvim".source = ./config/nvim;
   };
 
-  imports = [./nvf.nix];
+  #imports = [./nvf.nix];
   home.stateVersion = "25.05";
   home.sessionVariables.XMODIFIERS = "@im=fcitx";
 
@@ -133,7 +137,7 @@ in {
     defaultTimeout = "5";
   };
 
-  services.blueman-applet = lib.mkIf isLinux {
+		  services.blueman-applet = lib.mkIf isLinux {
     enable = true;
   };
 }
