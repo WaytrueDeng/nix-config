@@ -1,12 +1,40 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
+{ config
+, pkgs
+, lib
+, ...
+}:
+let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
-in {
+  tidyplots = pkgs.rPackages.buildRPackage {
+    name = "tidyplots";
+    src = pkgs.fetchFromGitHub {
+      owner = "jbengler";
+      repo = "tidyplots";
+      rev = "0a89bcbf3687f4884cdac2e651717431f1fb5cb8"; # 替换为实际commit ID
+      sha256 = "16c76k6523pp5jx3plrzfh63hpgabdfik5apv9pc839l0nbw1qwy"; # 通过nix-prefetch-url获取
+    };
+    propagatedBuildInputs = with pkgs.rPackages; [
+      ggplot2
+      dplyr
+      tidyr
+      purrr
+      tibble
+      stringr
+      scales
+      gridExtra # 常见缺失依赖
+      forcats
+      ggbeeswarm
+      ggpubr
+      ggrastr
+      ggrepel
+      Hmisc
+      htmltools
+      patchwork
+    ];
+  };
+in
+{
   home.username = "waytrue";
   home.homeDirectory = lib.mkForce (
     if isDarwin
@@ -17,22 +45,38 @@ in {
   home.packages = with pkgs;
     [
       btop
-      fzf
-      git
-      unzip
-      zellij
-      kitty
-      neovim
+      cargo
       dig
-      tldr
-      zoxide
-      wget
-      zotero
-      typst
-      feishin
       eza
       fastfetch
-			spotify
+      feishin
+      fzf
+      git
+      go
+      imagemagick
+      wezterm
+      neovim
+      spotify
+      tldr
+      typst
+      unzip
+      wget
+      yazi
+      tmux
+      zotero
+      zoxide
+      ripgrep
+      localsend
+      (rWrapper.override
+        {
+          packages = [
+            tidyplots
+            rPackages.tidyverse
+            rPackages.ggplot2
+            rPackages.httpgd
+            rPackages.languageserver
+          ];
+        })
     ]
     ++ (
       if isDarwin
@@ -57,6 +101,28 @@ in {
       ]
     );
 
+  nixpkgs.overlays = [
+    (self: super: {
+      rPackages = super.rPackages.override {
+        overrides = rself: rsuper: {
+          tidyplots = rself.buildRPackage {
+            name = "tidyplots";
+            src = super.fetchFromGitHub {
+              owner = "jbengler";
+              repo = "tidyplots";
+              rev = "COMMIT_HASH"; # 替换为实际commit ID
+              sha256 = "HASH_VALUE"; # 通过nix-prefetch-url获取
+            };
+            propagatedBuildInputs = with rself; [
+              ggplot2
+              tidyverse
+              # 添加其他DESCRIPTION中的依赖
+            ];
+          };
+        };
+      };
+    })
+  ];
   programs.home-manager.enable = true;
 
   programs.aerospace = lib.mkIf isDarwin {
@@ -73,6 +139,19 @@ in {
 
   programs.fish = {
     enable = true;
+    functions = {
+      y = ''
+        set tmp (mktemp -t "yazi-cwd.XXXXXX")
+        yazi $argv --cwd-file="$tmp"
+        if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+          builtin cd -- "$cwd"
+        end
+        rm -f -- "$tmp"
+      '';
+    };
+    shellInit = ''
+      set -gx EDITOR nvim  # 全局生效
+    '';
   };
   programs.starship = {
     enable = true;
@@ -93,6 +172,7 @@ in {
   };
 
   #imports = [./nvf.nix];
+  imports = [ ./tmux.nix ];
   home.stateVersion = "25.05";
   home.sessionVariables.XMODIFIERS = "@im=fcitx";
 
@@ -116,8 +196,8 @@ in {
     extraConfig = lib.fileContents ./config/hyprland.conf;
   };
 
-  programs.waybar = lib.mkIf isLinux {enable = true;};
-  programs.wlogout = lib.mkIf isLinux {enable = true;};
+  programs.waybar = lib.mkIf isLinux { enable = true; };
+  programs.wlogout = lib.mkIf isLinux { enable = true; };
   programs.rofi = lib.mkIf isLinux {
     enable = true;
     package = pkgs.rofi-wayland;
@@ -126,9 +206,9 @@ in {
   fonts.fontconfig = lib.mkIf isLinux {
     enable = true;
     defaultFonts = {
-      monospace = ["LXGW WenKai Mono" "Noto Sans Mono CJK SC" "Sarasa Mono SC" "DejaVu Sans Mono"];
-      sansSerif = ["LXGW WenKai"];
-      serif = ["DejaVu Serif"];
+      monospace = [ "LXGW WenKai Mono" "Noto Sans Mono CJK SC" "Sarasa Mono SC" "DejaVu Sans Mono" ];
+      sansSerif = [ "LXGW WenKai" ];
+      serif = [ "DejaVu Serif" ];
     };
   };
 
@@ -137,7 +217,7 @@ in {
     defaultTimeout = "5";
   };
 
-		  services.blueman-applet = lib.mkIf isLinux {
+  services.blueman-applet = lib.mkIf isLinux {
     enable = true;
   };
 }

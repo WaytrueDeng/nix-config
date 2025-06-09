@@ -34,95 +34,93 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    home-manager,
-    stylix,
-    nixpkgs-stable,
-    nix-darwin,
-    ...
-  }: {
-    darwinConfigurations."waytruedeMac-mini" = nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      specialArgs = {
-        inherit self;
-        inherit inputs;
-      };
-      modules = [
-        ({
-          config,
-          pkgs,
-          ...
-        }: {
-          nixpkgs.config.allowUnfree = true; # 关键：全局允许非自由包
-        })
-        (./darwin/configuration.nix)
-        home-manager.darwinModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.waytrue = {
-            imports = [
-              ./home/home.nix
-              #inputs.nvf.homeManagerModules.default
-            ];
-          };
-        }
-      ];
-    };
-
-    nixosConfigurations.waytrue-desktop = nixpkgs.lib.nixosSystem rec {
-      system = "x86_64-linux";
-      specialArgs = {
-        # To use packages from nixpkgs-stable,
-        # we configure some parameters for it first
-        pkgs-stable = import nixpkgs-stable {
-          # Refer to the `system` parameter from
-          # the outer scope recursively
-          inherit system;
-          # To use Chrome, we need to allow the
-          # installation of non-free software.
-          config.allowUnfree = true;
+  outputs =
+    inputs @ { self
+    , nixpkgs
+    , home-manager
+    , stylix
+    , nixpkgs-stable
+    , nix-darwin
+    , ...
+    }: {
+      darwinConfigurations."waytruedeMac-mini" = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = {
+          inherit self;
+          inherit inputs;
         };
-
-        inherit inputs;
+        modules = [
+          ({ config
+           , pkgs
+           , ...
+           }: {
+            nixpkgs.config.allowUnfree = true; # 关键：全局允许非自由包
+          })
+          (./darwin/configuration.nix)
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.waytrue = {
+              imports = [
+                ./home/home.nix
+                #inputs.nvf.homeManagerModules.default
+              ];
+            };
+          }
+        ];
       };
-      modules = [
-        stylix.nixosModules.stylix
-        home-manager.nixosModules.home-manager
-        ({
-          config,
-          pkgs,
-          nixpkgs-stable,
-          inputs,
-          ...
-        }: {
-          # Allow unfree packages and insecure packages
-          nixpkgs.config.allowUnfree = true;
-          nixpkgs.config.permittedInsecurePackages = [
-            "clash-verge-rev-unwrapped-2.2.3"
-            "clash-verge-rev-2.2.3"
-            "electron-33.4.11"
-          ];
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.waytrue = {
-            imports = [
-              ./home/home.nix
-              #inputs.nvf.homeManagerModules.default
-            ];
-          };
-          home-manager.backupFileExtension = "backup";
 
-          # Optional: Explicitly include the package
-          environment.systemPackages = [pkgs.clash-verge-rev];
-        })
-        {
-          nix.settings.trusted-users = ["waytrue"];
-        }
-        ./os/configuration.nix
-      ];
+      nixosConfigurations.waytrue-desktop = nixpkgs.lib.nixosSystem rec {
+        system = "x86_64-linux";
+        specialArgs = {
+          # To use packages from nixpkgs-stable,
+          # we configure some parameters for it first
+          pkgs-stable = import nixpkgs-stable {
+            # Refer to the `system` parameter from
+            # the outer scope recursively
+            inherit system;
+            # To use Chrome, we need to allow the
+            # installation of non-free software.
+            config.allowUnfree = true;
+          };
+
+          inherit inputs;
+        };
+        modules = [
+          stylix.nixosModules.stylix
+          home-manager.nixosModules.home-manager
+          ({ config
+           , pkgs
+           , nixpkgs-stable
+           , inputs
+           , ...
+           }: {
+            # Allow unfree packages and insecure packages
+            nixpkgs.config.allowUnfree = true;
+            nixpkgs.config.permittedInsecurePackages = [
+              "clash-verge-rev-unwrapped-2.2.3"
+              "clash-verge-rev-2.2.3"
+              "electron-33.4.11"
+            ];
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.waytrue = {
+              imports = [
+                ./home/home.nix
+                #inputs.nvf.homeManagerModules.default
+              ];
+            };
+            home-manager.backupFileExtension = "backup";
+
+            # Optional: Explicitly include the package
+            environment.systemPackages = [ pkgs.clash-verge-rev ];
+          })
+          {
+            nix.settings.trusted-users = [ "waytrue" ];
+          }
+          ./os/configuration.nix
+        ];
+      };
     };
-  };
 }
