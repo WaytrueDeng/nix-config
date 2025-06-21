@@ -15,6 +15,7 @@ let
       sha256 = "16c76k6523pp5jx3plrzfh63hpgabdfik5apv9pc839l0nbw1qwy"; # 通过nix-prefetch-url获取
     };
     propagatedBuildInputs = with pkgs.rPackages; [
+      svglite
       ggplot2
       dplyr
       tidyr
