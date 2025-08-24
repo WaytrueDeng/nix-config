@@ -6,6 +6,13 @@
 let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
+  tex = (pkgs.texlive.combine {
+    inherit (pkgs.texlive) scheme-full
+      dvisvgm dvipng# for preview and export as html
+      wrapfig amsmath ulem hyperref capt-of;
+    #(setq org-latex-compiler "lualatex")
+    #(setq org-preview-latex-default-process 'dvisvgm)
+  });
   tidyplots = pkgs.rPackages.buildRPackage {
     name = "tidyplots";
     src = pkgs.fetchFromGitHub {
@@ -15,6 +22,12 @@ let
       sha256 = "16c76k6523pp5jx3plrzfh63hpgabdfik5apv9pc839l0nbw1qwy"; # 通过nix-prefetch-url获取
     };
     propagatedBuildInputs = with pkgs.rPackages; [
+      org_Hs_eg_db
+      heavy
+
+      clusterProfiler
+      decoupleR
+      pheatmap
       svglite
       ggplot2
       dplyr
@@ -32,6 +45,7 @@ let
       Hmisc
       htmltools
       patchwork
+      rix
     ];
   };
 in
@@ -45,6 +59,8 @@ in
 
   home.packages = with pkgs;
     [
+      android-tools
+      uv
       btop
       cargo
       dig
@@ -53,8 +69,10 @@ in
       feishin
       fzf
       git
+      sshfs
       go
       imagemagick
+      tex
       wezterm
       neovim
       spotify
@@ -62,9 +80,9 @@ in
       typst
       unzip
       wget
+      aria2
       yazi
       tmux
-      zotero
       zoxide
       ripgrep
       localsend
@@ -91,6 +109,8 @@ in
         inkscape
         lutris-unwrapped
         hyprshot
+        zotero
+
         rustdesk
         onedrivegui
         firefox
