@@ -22,13 +22,6 @@ let
       sha256 = "16c76k6523pp5jx3plrzfh63hpgabdfik5apv9pc839l0nbw1qwy"; # 通过nix-prefetch-url获取
     };
     propagatedBuildInputs = with pkgs.rPackages; [
-      org_Hs_eg_db
-      heavy
-
-      clusterProfiler
-      decoupleR
-      pheatmap
-      svglite
       ggplot2
       dplyr
       tidyr
@@ -59,6 +52,9 @@ in
 
   home.packages = with pkgs;
     [
+      poppler_data
+      poppler
+
       android-tools
       uv
       btop
@@ -84,16 +80,30 @@ in
       yazi
       tmux
       zoxide
+      pdfarranger
       ripgrep
       localsend
       (rWrapper.override
         {
           packages = [
+            rPackages.org_Hs_eg_db
+            rPackages.haven
+            rPackages.clusterProfiler
+            rPackages.decoupleR
+            rPackages.pheatmap
+            rPackages.svglite
             tidyplots
+            rPackages.multipanelfigure
+            rPackages.vroom
+            rPackages.sf
+            rPackages.openxlsx
+            rPackages.lattice
+            rPackages.magrittr
             rPackages.tidyverse
             rPackages.ggplot2
             rPackages.httpgd
-            rPackages.languageserver
+            rPackages.gtsummary
+            rPackages.foreign
           ];
         })
     ]
