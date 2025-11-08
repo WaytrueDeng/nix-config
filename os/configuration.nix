@@ -21,7 +21,13 @@
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  # networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+    networking = {
+    nameservers = [ "223.5.5.5" ];
+    # If using dhcpcd:
+    # If using NetworkManager:
+    networkmanager.dns = "none";
+  };
 
   # Set your time zone.
   # time.timeZone = "Europe/Amsterdam";
@@ -101,9 +107,33 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
+  #services.xserver.desktopManager.gnome.enable = true;
 
+hardware.bluetooth = {
+  enable = true;
+  powerOnBoot = true;
+  settings = {
+    General = {
+      # Shows battery charge of connected devices on supported
+      # Bluetooth adapters. Defaults to 'false'.
+      Experimental = true;
+      # When enabled other devices can connect faster to us, however
+      # the tradeoff is increased power consumption. Defaults to
+      # 'false'.
+      FastConnectable = true;
+    };
+    Input = {
+      ClassicBondedOnly = false;
+    };
+    Policy = {
+      # Enable all controllers when they are found. This includes
+      # adapters present on start as well as adapters that are plugged
+      # in later on. Defaults to 'true'.
+      AutoEnable = true;
+    };
+  };
+};
   services.blueman.enable = true;
 
   # Configure keymap in X11
@@ -134,9 +164,9 @@
     shell = pkgs.nushell;
   };
 
-  #programs.firefox.enable = true;
-  programs.clash-verge.enable = true;
-  programs.hyprland.enable = true; # enable Hyprland
+	#programs.hyprland.enable = true; # enable Hyprland
+  programs.niri.enable = true;
+  programs.clash-verge = {enable = true;tunMode = true;serviceMode = true;};
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   # List packages installed in system profile. To search, run:
@@ -147,25 +177,18 @@
       wget
       microsoft-edge
       kitty
-      ghostty
-      q4wine
+ alacritty
       wechat-uos
       wl-clipboard
       gcc
+     git
       R
-      python3Full
-      nodejs_23
       cargo
       rustc
-
       nerd-fonts.fira-code
-      bottles
-      protontricks
       pavucontrol
       tree-sitter
-
-      wineWowPackages.stable
-      winetricks
+      kanshi
     ]
     ++ (with pkgs-stable; [
       #  wineWowPackages.stable
@@ -184,12 +207,23 @@
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
+  services.tlp = {
+		enable = true;
+		  settings = {
+      # 设置电池充电阈值（开始充电/停止充电）
+      STOP_CHARGE_THRESH_BAT0 = 1;     # 当电量达到 80% 时停止充电
+      
+      # 如果有多个电池，可以分别为它们设置
+      # START_CHARGE_THRESH_BAT1 = 75;
+      # STOP_CHARGE_THRESH_BAT1 = 80;
+    };
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you

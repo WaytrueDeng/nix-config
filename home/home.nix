@@ -1,6 +1,7 @@
 { config
 , pkgs
 , lib
+,inputs
 , ...
 }:
 let
@@ -43,6 +44,7 @@ let
   };
 in
 {
+
   home.username = "waytrue";
   home.homeDirectory = lib.mkForce (
     if isDarwin
@@ -54,7 +56,8 @@ in
     [
       poppler_data
       poppler
-
+      nix-search-tv
+      nerd-fonts.fira-code
       android-tools
       uv
       btop
@@ -82,6 +85,7 @@ in
       zoxide
       pdfarranger
       ripgrep
+      xwayland-satellite
       localsend
       (rWrapper.override
         {
@@ -101,7 +105,7 @@ in
             rPackages.magrittr
             rPackages.tidyverse
             rPackages.ggplot2
-            rPackages.httpgd
+            #rPackages.httpgd
             rPackages.gtsummary
             rPackages.foreign
           ];
@@ -116,14 +120,11 @@ in
       ]
       else [
         # 确保以下包名有效：
+	libreoffice
         inkscape
         lutris-unwrapped
         hyprshot
         zotero
-
-        rustdesk
-        onedrivegui
-        firefox
         gcc
         catppuccin-fcitx5
         wpsoffice-cn
@@ -165,7 +166,13 @@ in
     shellAliases = {
       ns = "doas nixos-rebuild switch --flake ${config.home.homeDirectory}/Documents/nix-config#waytrue-desktop";
       hmf = "nvim ${config.home.homeDirectory}/Documents/nix-config/home/home.nix";
+
     };
+    extraConfig = ''
+      def snp [] {
+        nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history
+      }
+    '';
   };
 
   programs.fish = {
@@ -200,10 +207,11 @@ in
     ".config/waybar".source = ./config/waybar;
     ".config/rofi".source = ./config/rofi;
     ".config/nvim".source = ./config/nvim;
+    ".config/kanshi".source = ./config/kanshi;
   };
 
   #imports = [./nvf.nix];
-  imports = [ ./tmux.nix ];
+  imports = [./tmux.nix ];
   home.stateVersion = "25.05";
   home.sessionVariables.XMODIFIERS = "@im=fcitx";
 
@@ -231,7 +239,7 @@ in
   programs.wlogout = lib.mkIf isLinux { enable = true; };
   programs.rofi = lib.mkIf isLinux {
     enable = true;
-    package = pkgs.rofi-wayland;
+    package = pkgs.rofi;
   };
 
   fonts.fontconfig = lib.mkIf isLinux {

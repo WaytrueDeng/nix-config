@@ -1,5 +1,5 @@
 {
-  description = "NixOS configuration of Ryan Yin";
+  description = "nixos config of waytrue deng";
 
   # the nixConfig here only affects the flake itself, not the system configuration!
   nixConfig = {
@@ -88,6 +88,7 @@
           inherit inputs;
         };
         modules = [
+
           stylix.nixosModules.stylix
           home-manager.nixosModules.home-manager
           ({ config
@@ -108,6 +109,8 @@
             home-manager.users.waytrue = {
               imports = [
                 ./home/home.nix
+	./home/niri.nix
+
                 #inputs.nvf.homeManagerModules.default
               ];
             };
