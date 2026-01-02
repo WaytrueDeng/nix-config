@@ -6,6 +6,7 @@
   lib,
   pkgs,
   pkgs-stable,
+  inputs,
   ...
 }: {
   imports = [
@@ -21,9 +22,9 @@
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
-    networking = {
-    nameservers = [ "223.5.5.5" ];
+  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
+  networking = {
+    nameservers = ["223.5.5.5"];
     # If using dhcpcd:
     # If using NetworkManager:
     networkmanager.dns = "none";
@@ -99,6 +100,7 @@
     fcitx5.addons = with pkgs; [
       fcitx5-rime
       fcitx5-gtk
+      kdePackages.fcitx5-qt
       rime-data
     ];
   };
@@ -110,30 +112,30 @@
   services.displayManager.gdm.enable = true;
   #services.xserver.desktopManager.gnome.enable = true;
 
-hardware.bluetooth = {
-  enable = true;
-  powerOnBoot = true;
-  settings = {
-    General = {
-      # Shows battery charge of connected devices on supported
-      # Bluetooth adapters. Defaults to 'false'.
-      Experimental = true;
-      # When enabled other devices can connect faster to us, however
-      # the tradeoff is increased power consumption. Defaults to
-      # 'false'.
-      FastConnectable = true;
-    };
-    Input = {
-      ClassicBondedOnly = false;
-    };
-    Policy = {
-      # Enable all controllers when they are found. This includes
-      # adapters present on start as well as adapters that are plugged
-      # in later on. Defaults to 'true'.
-      AutoEnable = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings = {
+      General = {
+        # Shows battery charge of connected devices on supported
+        # Bluetooth adapters. Defaults to 'false'.
+        Experimental = true;
+        # When enabled other devices can connect faster to us, however
+        # the tradeoff is increased power consumption. Defaults to
+        # 'false'.
+        FastConnectable = true;
+      };
+      Input = {
+        ClassicBondedOnly = false;
+      };
+      Policy = {
+        # Enable all controllers when they are found. This includes
+        # adapters present on start as well as adapters that are plugged
+        # in later on. Defaults to 'true'.
+        AutoEnable = true;
+      };
     };
   };
-};
   services.blueman.enable = true;
 
   # Configure keymap in X11
@@ -164,10 +166,20 @@ hardware.bluetooth = {
     shell = pkgs.nushell;
   };
 
-	#programs.hyprland.enable = true; # enable Hyprland
-  programs.niri.enable = true;
-  programs.clash-verge = {enable = true;tunMode = true;serviceMode = true;};
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  #programs.hyprland.enable = true; # enable Hyprland
+  programs.clash-verge = {
+    enable = true;
+    tunMode = true;
+    serviceMode = true;
+  };
+  programs.thunar.enable = true;
+
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    SDL_IM_MODULE = "fcitx";
+  };
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -177,11 +189,11 @@ hardware.bluetooth = {
       wget
       microsoft-edge
       kitty
- alacritty
+      alacritty
       wechat-uos
       wl-clipboard
       gcc
-     git
+      git
       R
       cargo
       rustc
@@ -189,6 +201,7 @@ hardware.bluetooth = {
       pavucontrol
       tree-sitter
       kanshi
+      (inputs.nsticky.packages.${system}.nsticky)
     ]
     ++ (with pkgs-stable; [
       #  wineWowPackages.stable
@@ -207,12 +220,14 @@ hardware.bluetooth = {
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
+  services.udisks2.enable = true;
+
   services.tlp = {
-		enable = true;
-		  settings = {
+    enable = true;
+    settings = {
       # 设置电池充电阈值（开始充电/停止充电）
-      STOP_CHARGE_THRESH_BAT0 = 1;     # 当电量达到 80% 时停止充电
-      
+      STOP_CHARGE_THRESH_BAT0 = 1; # 当电量达到 80% 时停止充电
+
       # 如果有多个电池，可以分别为它们设置
       # START_CHARGE_THRESH_BAT1 = 75;
       # STOP_CHARGE_THRESH_BAT1 = 80;
@@ -224,6 +239,14 @@ hardware.bluetooth = {
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
+  programs.vscode = {
+    enable = true;
+    extensions = with pkgs.vscode-extensions; [
+      dracula-theme.theme-dracula
+      yzhang.markdown-all-in-one
+      ms-vscode-remote.remote-ssh
+    ];
+  };
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you

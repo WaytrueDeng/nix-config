@@ -1,19 +1,27 @@
-{ config
-, pkgs
-, lib
-,inputs
-, ...
-}:
-let
+{
+  config,
+  pkgs,
+  lib,
+  inputs,
+  ...
+}: let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
-  tex = (pkgs.texlive.combine {
-    inherit (pkgs.texlive) scheme-full
-      dvisvgm dvipng# for preview and export as html
-      wrapfig amsmath ulem hyperref capt-of;
+  tex = pkgs.texlive.combine {
+    inherit
+      (pkgs.texlive)
+      scheme-full
+      dvisvgm
+      dvipng # for preview and export as html
+      wrapfig
+      amsmath
+      ulem
+      hyperref
+      capt-of
+      ;
     #(setq org-latex-compiler "lualatex")
     #(setq org-preview-latex-default-process 'dvisvgm)
-  });
+  };
   tidyplots = pkgs.rPackages.buildRPackage {
     name = "tidyplots";
     src = pkgs.fetchFromGitHub {
@@ -42,9 +50,7 @@ let
       rix
     ];
   };
-in
-{
-
+in {
   home.username = "waytrue";
   home.homeDirectory = lib.mkForce (
     if isDarwin
@@ -58,6 +64,8 @@ in
       poppler
       nix-search-tv
       nerd-fonts.fira-code
+      corefonts
+      wqy_microhei
       android-tools
       uv
       btop
@@ -120,7 +128,9 @@ in
       ]
       else [
         # 确保以下包名有效：
-	libreoffice
+        ocrmypdf
+        rofi
+        libreoffice
         inkscape
         lutris-unwrapped
         hyprshot
@@ -130,6 +140,7 @@ in
         wpsoffice-cn
         spotify
         onedrive
+        firefox
       ]
     );
 
@@ -166,7 +177,6 @@ in
     shellAliases = {
       ns = "doas nixos-rebuild switch --flake ${config.home.homeDirectory}/Documents/nix-config#waytrue-desktop";
       hmf = "nvim ${config.home.homeDirectory}/Documents/nix-config/home/home.nix";
-
     };
     extraConfig = ''
       def snp [] {
@@ -211,7 +221,7 @@ in
   };
 
   #imports = [./nvf.nix];
-  imports = [./tmux.nix ];
+  imports = [./tmux.nix];
   home.stateVersion = "25.05";
   home.sessionVariables.XMODIFIERS = "@im=fcitx";
 
@@ -235,8 +245,8 @@ in
     extraConfig = lib.fileContents ./config/hyprland.conf;
   };
 
-  programs.waybar = lib.mkIf isLinux { enable = true; };
-  programs.wlogout = lib.mkIf isLinux { enable = true; };
+  programs.waybar = lib.mkIf isLinux {enable = true;};
+  programs.wlogout = lib.mkIf isLinux {enable = true;};
   programs.rofi = lib.mkIf isLinux {
     enable = true;
     package = pkgs.rofi;
@@ -245,12 +255,11 @@ in
   fonts.fontconfig = lib.mkIf isLinux {
     enable = true;
     defaultFonts = {
-      monospace = [ "LXGW WenKai Mono" "Noto Sans Mono CJK SC" "Sarasa Mono SC" "DejaVu Sans Mono" ];
-      sansSerif = [ "LXGW WenKai" ];
-      serif = [ "DejaVu Serif" ];
+      monospace = ["LXGW WenKai Mono" "Noto Sans Mono CJK SC" "Sarasa Mono SC" "DejaVu Sans Mono"];
+      sansSerif = ["LXGW WenKai"];
+      serif = ["DejaVu Serif"];
     };
   };
-
   services.mako = lib.mkIf isLinux {
     enable = true;
     defaultTimeout = "5";
