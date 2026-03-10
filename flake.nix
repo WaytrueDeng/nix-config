@@ -40,20 +40,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    dgop = {
-      url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    dms-cli = {
-      url = "github:AvengeMedia/danklinux";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     dankMaterialShell = {
       url = "github:AvengeMedia/DankMaterialShell";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.dgop.follows = "dgop";
-      inputs.dms-cli.follows = "dms-cli";
     };
     nsticky = {
       url = "github:lonerOrz/nsticky";
@@ -69,8 +58,6 @@
     nixpkgs-stable,
     nix-darwin,
     niri,
-    dgop,
-    dms-cli,
     dankMaterialShell,
     affinity-nix,
     nsticky,
@@ -149,10 +136,8 @@
               ./home/nvf.nix
               inputs.nvf.homeManagerModules.default
               inputs.niri.homeModules.niri
-              inputs.dankMaterialShell.homeModules.dankMaterialShell.default
-              inputs.dankMaterialShell.homeModules.dankMaterialShell.niri
-
-              #inputs.nvf.homeManagerModules.default
+              inputs.dankMaterialShell.homeModules.dank-material-shell
+              inputs.dankMaterialShell.homeModules.niri
             ];
           };
 

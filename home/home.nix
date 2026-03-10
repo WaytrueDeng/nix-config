@@ -22,34 +22,6 @@
     #(setq org-latex-compiler "lualatex")
     #(setq org-preview-latex-default-process 'dvisvgm)
   };
-  tidyplots = pkgs.rPackages.buildRPackage {
-    name = "tidyplots";
-    src = pkgs.fetchFromGitHub {
-      owner = "jbengler";
-      repo = "tidyplots";
-      rev = "0a89bcbf3687f4884cdac2e651717431f1fb5cb8"; # 替换为实际commit ID
-      sha256 = "16c76k6523pp5jx3plrzfh63hpgabdfik5apv9pc839l0nbw1qwy"; # 通过nix-prefetch-url获取
-    };
-    propagatedBuildInputs = with pkgs.rPackages; [
-      ggplot2
-      dplyr
-      tidyr
-      purrr
-      tibble
-      stringr
-      scales
-      gridExtra # 常见缺失依赖
-      forcats
-      ggbeeswarm
-      ggpubr
-      ggrastr
-      ggrepel
-      Hmisc
-      htmltools
-      patchwork
-      rix
-    ];
-  };
 in {
   home.username = "waytrue";
   home.homeDirectory = lib.mkForce (
@@ -94,30 +66,6 @@ in {
       pdfarranger
       ripgrep
       xwayland-satellite
-      localsend
-      (rWrapper.override
-        {
-          packages = [
-            rPackages.org_Hs_eg_db
-            rPackages.haven
-            rPackages.clusterProfiler
-            rPackages.decoupleR
-            rPackages.pheatmap
-            rPackages.svglite
-            tidyplots
-            rPackages.multipanelfigure
-            rPackages.vroom
-            rPackages.sf
-            rPackages.openxlsx
-            rPackages.lattice
-            rPackages.magrittr
-            rPackages.tidyverse
-            rPackages.ggplot2
-            #rPackages.httpgd
-            rPackages.gtsummary
-            rPackages.foreign
-          ];
-        })
     ]
     ++ (
       if isDarwin
@@ -128,6 +76,8 @@ in {
       ]
       else [
         # 确保以下包名有效：
+        bottles
+        xunlei-uos
         ocrmypdf
         rofi
         libreoffice
@@ -135,9 +85,11 @@ in {
         lutris-unwrapped
         hyprshot
         zotero
+        winboat
         gcc
         catppuccin-fcitx5
         wpsoffice-cn
+        siyuan
         spotify
         onedrive
         firefox
@@ -216,7 +168,7 @@ in {
   home.file = {
     ".config/waybar".source = ./config/waybar;
     ".config/rofi".source = ./config/rofi;
-    ".config/nvim".source = ./config/nvim;
+    #".config/nvim".source = ./config/nvim;
     ".config/kanshi".source = ./config/kanshi;
   };
 

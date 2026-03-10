@@ -159,7 +159,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.waytrue = {
     isNormalUser = true;
-    extraGroups = ["wheel"]; # Enable ‘sudo’ for the user.
+    extraGroups = ["wheel" "docker"]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
     ];
@@ -194,7 +194,7 @@
       wl-clipboard
       gcc
       git
-      R
+      acpi
       cargo
       rustc
       nerd-fonts.fira-code
@@ -247,6 +247,9 @@
       ms-vscode-remote.remote-ssh
     ];
   };
+  virtualisation.docker = {
+  enable = true;
+};
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you

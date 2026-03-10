@@ -140,8 +140,9 @@
   programs.dankMaterialShell = {
     enable = true;
     niri = {
-      enableKeybinds = true; # Automatic keybinding configuration
+      #enableKeybinds = true; # Automatic keybinding configuration
       enableSpawn = true; # Auto-start DMS with niri
+      #includes.enable = false;
     };
   };
   programs.alacritty.enable = true; # Super+T in the default setting (terminal)
