@@ -7,21 +7,6 @@
 }: let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
-  tex = pkgs.texlive.combine {
-    inherit
-      (pkgs.texlive)
-      scheme-full
-      dvisvgm
-      dvipng # for preview and export as html
-      wrapfig
-      amsmath
-      ulem
-      hyperref
-      capt-of
-      ;
-    #(setq org-latex-compiler "lualatex")
-    #(setq org-preview-latex-default-process 'dvisvgm)
-  };
 in {
   home.username = "waytrue";
   home.homeDirectory = lib.mkForce (
@@ -45,14 +30,11 @@ in {
       dig
       eza
       fastfetch
-      feishin
       fzf
       git
       sshfs
       go
       imagemagick
-      tex
-      wezterm
       neovim
       spotify
       tldr
@@ -66,6 +48,7 @@ in {
       pdfarranger
       ripgrep
       xwayland-satellite
+      xsettingsd
     ]
     ++ (
       if isDarwin
@@ -81,9 +64,8 @@ in {
         ocrmypdf
         rofi
         libreoffice
-        inkscape
         lutris-unwrapped
-        hyprshot
+        localsend
         zotero
         winboat
         gcc
@@ -96,28 +78,6 @@ in {
       ]
     );
 
-  nixpkgs.overlays = [
-    (self: super: {
-      rPackages = super.rPackages.override {
-        overrides = rself: rsuper: {
-          tidyplots = rself.buildRPackage {
-            name = "tidyplots";
-            src = super.fetchFromGitHub {
-              owner = "jbengler";
-              repo = "tidyplots";
-              rev = "COMMIT_HASH"; # 替换为实际commit ID
-              sha256 = "HASH_VALUE"; # 通过nix-prefetch-url获取
-            };
-            propagatedBuildInputs = with rself; [
-              ggplot2
-              tidyverse
-              # 添加其他DESCRIPTION中的依赖
-            ];
-          };
-        };
-      };
-    })
-  ];
   programs.home-manager.enable = true;
 
   programs.aerospace = lib.mkIf isDarwin {
@@ -172,8 +132,7 @@ in {
     ".config/kanshi".source = ./config/kanshi;
   };
 
-  #imports = [./nvf.nix];
-  imports = [./tmux.nix];
+  imports = [./nvf.nix ./tmux.nix];
   home.stateVersion = "25.05";
   home.sessionVariables.XMODIFIERS = "@im=fcitx";
 
@@ -196,7 +155,13 @@ in {
     systemd.enableXdgAutostart = true;
     extraConfig = lib.fileContents ./config/hyprland.conf;
   };
-
+  programs.kitty = {
+    enable = true;
+    extraConfig = ''
+      include dank-tabs.conf
+      include dank-theme.conf
+    '';
+  };
   programs.waybar = lib.mkIf isLinux {enable = true;};
   programs.wlogout = lib.mkIf isLinux {enable = true;};
   programs.rofi = lib.mkIf isLinux {
@@ -212,6 +177,17 @@ in {
       serif = ["DejaVu Serif"];
     };
   };
+
+  services.xsettingsd = lib.mkIf isLinux {
+    enable = true;
+
+    settings = {
+      "Xft/DPI" = 368640; # 可选，匹配360 DPI
+      "Xft/Antialias" = true;
+      "Xft/Hinting" = 1;
+    };
+  };
+
   services.mako = lib.mkIf isLinux {
     enable = true;
     defaultTimeout = "5";

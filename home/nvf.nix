@@ -4,7 +4,7 @@
 config,
   ...
 }: let
-  isMaximal = true;
+  isMaximal = false;
 in {
   programs.nvf = {
     enable = true;

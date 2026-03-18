@@ -188,8 +188,6 @@
       vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       wget
       microsoft-edge
-      kitty
-      alacritty
       wechat-uos
       wl-clipboard
       gcc
@@ -248,8 +246,8 @@
     ];
   };
   virtualisation.docker = {
-  enable = true;
-};
+    enable = true;
+  };
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
