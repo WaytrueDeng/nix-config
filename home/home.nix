@@ -58,7 +58,15 @@ in {
         imagej
       ]
       else [
-        # 确保以下包名有效：
+        (pkgs.rstudioWrapper.override {
+          packages = with pkgs.rPackages; [
+            ggplot2
+            dplyr
+            xts
+          ];
+        })
+        wemeet
+        wechat-uos
         bottles
         xunlei-uos
         ocrmypdf
@@ -70,11 +78,13 @@ in {
         winboat
         gcc
         catppuccin-fcitx5
+        adw-gtk3
         wpsoffice-cn
         siyuan
         spotify
         onedrive
         firefox
+        qt6Packages.qt6ct
       ]
     );
 
@@ -158,8 +168,16 @@ in {
   programs.kitty = {
     enable = true;
     extraConfig = ''
-      include dank-tabs.conf
-      include dank-theme.conf
+            include dank-tabs.conf
+            include dank-theme.conf
+            # 1. 设置字体为 JetBrains Mono
+      font_family JetBrainsMono
+
+      # 2. 设置背景透明度 (0.0为完全透明，1.0为完全不透明)
+      background_opacity 1.0
+
+      # 3. （关键步骤）启用动态透明度调整，使透明度设置生效
+      dynamic_background_opacity yes
     '';
   };
   programs.waybar = lib.mkIf isLinux {enable = true;};

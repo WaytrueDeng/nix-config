@@ -10,6 +10,10 @@
   programs.niri.package = pkgs.niri;
 
   programs.niri.settings = {
+    environment = {
+      QT_QPA_PLATFORMTHEME = "qt6ct";
+      QT_QPA_PLATFORMTHEME_QT6 = "qt6ct";
+    };
     spawn-at-startup = [
       {argv = ["nsticky"];}
       {argv = ["sh" "-c" "echo 'Xft.dpi: 192' | xrdb -merge"];}

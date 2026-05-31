@@ -57,9 +57,6 @@
     }
   ];
 
-  stylix.enable = true;
-  stylix.targets.nvf.enable = false;
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-latte.yaml";
   fonts = {
     packages = with pkgs; [
       noto-fonts
@@ -179,6 +176,7 @@
     GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
     SDL_IM_MODULE = "fcitx";
+    QT_QPA_PLATFORMTHEME = lib.mkForce "qt6ct";
   };
 
   # List packages installed in system profile. To search, run:
