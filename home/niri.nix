@@ -59,12 +59,12 @@
     };
     prefer-no-csd = true;
     binds = with config.lib.niri.actions; {
-      "Mod+1".action.focus-workspace = 1;
-      "Mod+2".action.focus-workspace = 2;
-      "Mod+3".action.focus-workspace = 3;
-      "Mod+4".action.focus-workspace = 4;
-      "Mod+5".action.focus-workspace = 5;
-      "Mod+6".action.focus-workspace = 6;
+      "Mod+1".action.focus-workspace = "term";
+      "Mod+2".action.focus-workspace = "lit";
+      "Mod+3".action.focus-workspace = "web";
+      "Mod+4".action.focus-workspace = "dev";
+      "Mod+5".action.focus-workspace = "chat";
+      "Mod+6".action.focus-workspace = "media";
       "Mod+7".action.focus-workspace = 7;
       "Mod+8".action.focus-workspace = 8;
       "Mod+9".action.focus-workspace = 9;
@@ -137,22 +137,22 @@
         hotkey-overlay.title = "switch-preset-column-width";
       };
       "Mod+Ctrl+1" = {
-        action.move-column-to-workspace = 1;
+        action.move-column-to-workspace = "term";
       };
       "Mod+Ctrl+2" = {
-        action.move-column-to-workspace = 2;
+        action.move-column-to-workspace = "lit";
       };
       "Mod+Ctrl+3" = {
-        action.move-column-to-workspace = 3;
+        action.move-column-to-workspace = "web";
       };
       "Mod+Ctrl+4" = {
-        action.move-column-to-workspace = 4;
+        action.move-column-to-workspace = "dev";
       };
       "Mod+Ctrl+5" = {
-        action.move-column-to-workspace = 5;
+        action.move-column-to-workspace = "chat";
       };
       "Mod+Ctrl+6" = {
-        action.move-column-to-workspace = 6;
+        action.move-column-to-workspace = "media";
       };
       "Mod+Ctrl+7" = {
         action.move-column-to-workspace = 7;

@@ -9,13 +9,13 @@
     mouse = true;
     keyMode = "vi";
     escapeTime = 10;
-    shell = "${pkgs.fish}/bin/fish"; # 如果你使用 zsh
+    shell = "${pkgs.zsh}/bin/zsh";
 
     extraConfig = ''
               # 基础设置
               set -g default-terminal "screen-256color"
-      	    set -g default-shell "${pkgs.fish}/bin/fish"
-          set -g default-command "${pkgs.fish}/bin/fish"
+      	    set -g default-shell "${pkgs.zsh}/bin/zsh"
+          set -g default-command "${pkgs.zsh}/bin/zsh"
               set -as terminal-features ",xterm-256color:RGB"
               set -g status-position top
               set -sg escape-time 10

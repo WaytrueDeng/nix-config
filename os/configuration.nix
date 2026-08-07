@@ -153,14 +153,16 @@
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
 
+  programs.zsh.enable = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.waytrue = {
     isNormalUser = true;
-    extraGroups = ["wheel" "docker"]; # Enable ‘sudo’ for the user.
+    extraGroups = ["wheel" "docker" "users"]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
     ];
-    shell = pkgs.nushell;
+    shell = pkgs.zsh;
   };
 
   #programs.hyprland.enable = true; # enable Hyprland

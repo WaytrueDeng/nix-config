@@ -64,6 +64,7 @@ in {
       ripgrep
       xwayland-satellite
       xsettingsd
+      codex
     ]
     ++ (
       if isDarwin
@@ -142,16 +143,39 @@ in {
       set -gx EDITOR nvim  # 全局生效
     '';
   };
+  programs.zsh = {
+    enable = true;
+    autosuggestion.enable = true;
+    enableCompletion = true;
+    syntaxHighlighting.enable = true;
+    shellAliases = {
+      ns = "doas nixos-rebuild switch --flake ${config.home.homeDirectory}/Documents/nix-config#waytrue-desktop";
+      hmf = "nvim ${config.home.homeDirectory}/Documents/nix-config/home/home.nix";
+    };
+    initContent = ''
+      export EDITOR=nvim
+
+      if [[ -o interactive ]] && command -v tmux >/dev/null 2>&1 && [[ -z "$TMUX" ]]; then
+        exec tmux new-session -A -s default
+      fi
+
+      snp() {
+        nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history
+      }
+    '';
+  };
   programs.starship = {
     enable = true;
     enableNushellIntegration = true;
     enableFishIntegration = true;
+    enableZshIntegration = true;
   };
 
   programs.zoxide = {
     enable = true;
     enableNushellIntegration = true;
     enableFishIntegration = true;
+    enableZshIntegration = true;
   };
 
   home.file = {
