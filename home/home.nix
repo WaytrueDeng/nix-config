@@ -7,6 +7,21 @@
 }: let
   isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
+  qqmusicScaled = pkgs.symlinkJoin {
+    name = "qqmusic-scaled";
+    paths = [pkgs.qqmusic];
+    nativeBuildInputs = [pkgs.makeWrapper];
+    postBuild = ''
+      wrapProgram $out/bin/qqmusic \
+        --unset NIXOS_OZONE_WL \
+        --set ELECTRON_OZONE_PLATFORM_HINT x11 \
+        --set GDK_SCALE 1 \
+        --set GDK_DPI_SCALE 1 \
+        --add-flags "--high-dpi-support=1" \
+        --add-flags "--ozone-platform=x11" \
+        --add-flags "--force-device-scale-factor=0.8"
+    '';
+  };
 in {
   home.username = "waytrue";
   home.homeDirectory = lib.mkForce (
@@ -65,8 +80,6 @@ in {
             xts
           ];
         })
-        wemeet
-        wechat-uos
         bottles
         xunlei-uos
         ocrmypdf
@@ -85,11 +98,17 @@ in {
         onedrive
         firefox
         qt6Packages.qt6ct
+        qqmusicScaled
       ]
     );
 
   programs.home-manager.enable = true;
-
+  programs.obs-studio = {
+    enable = true;
+    plugins = with pkgs.obs-studio-plugins; [
+      obs-vaapi # 添加这个
+    ];
+  };
   programs.aerospace = lib.mkIf isDarwin {
     enable = true;
     userSettings = lib.trivial.importTOML ./config/aerospace/aerospace.toml;
