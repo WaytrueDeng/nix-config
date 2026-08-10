@@ -4,7 +4,12 @@
   pkgs,
   inputs,
   ...
-}: {
+}: let
+  cfg = config.waytrue.niri;
+in {
+  options.waytrue.niri.enable = lib.mkEnableOption "Waytrue niri desktop configuration";
+
+  config = lib.mkIf cfg.enable {
   #xdg.configFile."niri/config.kdl".source = ./config/niri/config.kdl;
   programs.niri.enable = true;
   programs.niri.package = pkgs.niri;
@@ -196,10 +201,11 @@
     };
   };
   programs.swaylock.enable = true; # Super+Alt+L in the default setting (screen locker)
-  services.mako.enable = true; # notification daemon
+  services.mako.enable = false; # notification daemon
   services.swayidle.enable = true; # idle management daemon
-  services.polkit-gnome.enable = true; # polkit
+  services.polkit-gnome.enable = false; # polkit
   home.packages = with pkgs; [
     swaybg # wallpaper
   ];
+  };
 }

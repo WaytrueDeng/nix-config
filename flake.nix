@@ -26,6 +26,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
+    flake-parts.url = "github:hercules-ci/flake-parts";
     home-manager.url = "github:nix-community/home-manager";
     affinity-nix.url = "github:mrshmllow/affinity-nix";
     logseq-nightly.url = "github:Bad3r/nix-logseq-git-flake";
@@ -51,46 +52,12 @@
     };
   };
 
-  outputs = inputs @ {
-    nixpkgs,
-    home-manager,
-    nixpkgs-stable,
-    niri,
-    dankMaterialShell,
-    affinity-nix,
-    nsticky,
-    logseq-nightly,
-    ...
-  }: let
-    mkPkgsStable = system:
-      import nixpkgs-stable {
-        inherit system;
-        config.allowUnfree = true;
-      };
+  outputs = inputs @ {flake-parts, ...}:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = ["x86_64-linux"];
 
-    mkNixos = {
-      system ? "x86_64-linux",
-      modules,
-    }:
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {
-          inherit inputs;
-          pkgs-stable = mkPkgsStable system;
-        };
-        modules =
-          [
-            home-manager.nixosModules.home-manager
-          ]
-          ++ modules;
-      };
-  in {
-    nixosConfigurations.waytrue-laptop = mkNixos {
-      modules = [./hosts/waytrue-laptop];
+      imports = [
+        ./flake/parts/nixos.nix
+      ];
     };
-
-    nixosConfigurations.waytrue-desktop = mkNixos {
-      modules = [./hosts/waytrue-desktop];
-    };
-  };
 }

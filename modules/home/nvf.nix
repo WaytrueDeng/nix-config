@@ -4,8 +4,12 @@
   config,
   ...
 }: let
+  cfg = config.waytrue.nvf;
   isMaximal = false;
 in {
+  options.waytrue.nvf.enable = lib.mkEnableOption "Waytrue nvf configuration";
+
+  config = lib.mkIf cfg.enable {
   programs.nvf = {
     enable = true;
     # your settings need to go into the settings attribute set
@@ -249,5 +253,6 @@ in {
         };
       };
     };
+  };
   };
 }

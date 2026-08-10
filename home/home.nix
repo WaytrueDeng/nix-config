@@ -115,7 +115,7 @@ in {
     userSettings = lib.trivial.importTOML ./config/aerospace/aerospace.toml;
   };
   programs.nushell = {
-    enable = true;
+    enable = false;
     shellAliases = {
       ns = "doas nixos-rebuild switch --flake ${config.home.homeDirectory}/Documents/nix-config#waytrue-desktop";
       hmf = "nvim ${config.home.homeDirectory}/Documents/nix-config/home/home.nix";
@@ -128,7 +128,7 @@ in {
   };
 
   programs.fish = {
-    enable = true;
+    enable = false;
     functions = {
       y = ''
         set tmp (mktemp -t "yazi-cwd.XXXXXX")
@@ -162,7 +162,13 @@ in {
       snp() {
         nix-search-tv print | fzf --preview 'nix-search-tv preview {}' --scheme history
       }
+
+      bindkey -M viins '^R' fzf-history-widget
     '';
+  };
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
   };
   programs.starship = {
     enable = true;
@@ -179,15 +185,54 @@ in {
   };
 
   home.file = {
-    ".config/waybar".source = ./config/waybar;
+    #".config/waybar".source = ./config/waybar;
     ".config/rofi".source = ./config/rofi;
     #".config/nvim".source = ./config/nvim;
-    ".config/kanshi".source = ./config/kanshi;
+    #".config/kanshi".source = ./config/kanshi;
   };
 
-  imports = [./nvf.nix ./tmux.nix];
+  imports = [
+    ../modules/home/niri.nix
+    ../modules/home/nvf.nix
+    ../modules/home/tmux.nix
+  ];
+  waytrue.niri.enable = true;
+  waytrue.nvf.enable = true;
+  waytrue.tmux.enable = true;
+
   home.stateVersion = "25.05";
   home.sessionVariables.XMODIFIERS = "@im=fcitx";
+
+  xdg.configFile = lib.mkIf isLinux {
+    "fcitx5/profile".text = ''
+      [Groups/0]
+      Name=Default
+      Default Layout=us
+      DefaultIM=rime
+
+      [Groups/0/Items/0]
+      Name=rime
+      Layout=
+
+      [GroupOrder]
+      0=Default
+    '';
+  };
+
+  home.activation.fcitxRimeConfig = lib.mkIf isLinux (
+    lib.hm.dag.entryAfter ["writeBoundary"] ''
+      rime_dir="${config.xdg.dataHome}/fcitx5/rime"
+      run mkdir -p "$rime_dir"
+      run rm -f "$rime_dir/default.custom.yaml"
+      run rm -f "$rime_dir/double_pinyin_flypy.custom.yaml"
+      run ${pkgs.coreutils}/bin/install -m 0644 ${
+        pkgs.writeText "default.custom.yaml" "patch:\n  schema_list:\n    - schema: double_pinyin_flypy\n"
+    } "$rime_dir/default.custom.yaml"
+      run ${pkgs.coreutils}/bin/install -m 0644 ${
+        pkgs.writeText "double_pinyin_flypy.custom.yaml" "patch:\n  switches/@2/reset: 1\n"
+    } "$rime_dir/double_pinyin_flypy.custom.yaml"
+  ''
+);
 
   # Linux 专属配置
   xdg.mimeApps = lib.mkIf isLinux {
@@ -203,7 +248,7 @@ in {
   };
 
   wayland.windowManager.hyprland = lib.mkIf isLinux {
-    enable = true;
+    enable = false;
     systemd.enable = true;
     systemd.enableXdgAutostart = true;
     extraConfig = lib.fileContents ./config/hyprland.conf;
@@ -223,7 +268,7 @@ in {
       dynamic_background_opacity yes
     '';
   };
-  programs.waybar = lib.mkIf isLinux {enable = true;};
+  programs.waybar = lib.mkIf isLinux {enable = false;};
   programs.wlogout = lib.mkIf isLinux {enable = true;};
   programs.rofi = lib.mkIf isLinux {
     enable = true;
@@ -250,7 +295,7 @@ in {
   };
 
   services.mako = lib.mkIf isLinux {
-    enable = true;
+    enable = false;
     defaultTimeout = "5";
   };
 

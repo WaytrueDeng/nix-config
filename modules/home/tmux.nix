@@ -1,6 +1,14 @@
-{ pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  cfg = config.waytrue.tmux;
+in {
+  options.waytrue.tmux.enable = lib.mkEnableOption "Waytrue tmux configuration";
+
+  config = lib.mkIf cfg.enable {
   programs.tmux = {
     enable = true;
     terminal = "tmux-256color";
@@ -94,5 +102,6 @@
       resurrect
       continuum
     ];
+  };
   };
 }
