@@ -5,7 +5,11 @@
   pkgs,
   pkgs-stable,
   ...
-}: {
+}: let
+  appimageRun = pkgs.appimage-run.override {
+    extraPkgs = pkgs: [pkgs.libxshmfence];
+  };
+in {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -102,6 +106,7 @@
     enable = true;
     pulse.enable = true;
   };
+  services.flatpak.enable = true;
   services.libinput.enable = true;
   services.udisks2.enable = true;
   services.tlp = {
@@ -116,14 +121,6 @@
     serviceMode = true;
   };
   programs.thunar.enable = true;
-  programs.vscode = {
-    enable = true;
-    extensions = with pkgs.vscode-extensions; [
-      dracula-theme.theme-dracula
-      yzhang.markdown-all-in-one
-      ms-vscode-remote.remote-ssh
-    ];
-  };
 
   users.users.waytrue = {
     isNormalUser = true;
@@ -146,13 +143,15 @@
     [
       vim
       wget
-      microsoft-edge
+      vscode
+      inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       wl-clipboard
       gcc
       git
       acpi
       cargo
       rustc
+      appimageRun
       nerd-fonts.fira-code
       pavucontrol
       tree-sitter

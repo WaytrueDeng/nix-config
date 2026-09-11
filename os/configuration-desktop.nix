@@ -204,7 +204,8 @@
     [
       vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       wget
-      microsoft-edge
+      vscode
+      inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       wl-clipboard
       gcc
       git
@@ -254,14 +255,6 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
-  programs.vscode = {
-    enable = true;
-    extensions = with pkgs.vscode-extensions; [
-      dracula-theme.theme-dracula
-      yzhang.markdown-all-in-one
-      ms-vscode-remote.remote-ssh
-    ];
-  };
   virtualisation.docker = {
     enable = true;
   };
@@ -297,14 +290,5 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  services.synergy.server = {
-    enable = true;
-    # 可选：指定监听的地址和端口，默认监听所有地址的 24800 端口
-    address = "0.0.0.0:24800";
-    # 可选：自定义屏幕名称，默认使用主机名
-    # screenName = "my-server";
-    # 可选：指定配置文件路径，默认 /etc/synergy-server.conf
-    # configFile = "/etc/synergy-server.conf";
-  };
   system.stateVersion = "25.05"; # Did you read the comment?
 }

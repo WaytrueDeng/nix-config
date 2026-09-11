@@ -33,10 +33,6 @@ in {
   '';
   boot.blacklistedKernelModules = [
     "nouveau"
-    "nvidia"
-    "nvidia_drm"
-    "nvidia_modeset"
-    "i2c_nvidia_gpu"
   ];
   virtualisation.spiceUSBRedirection.enable = true;
   boot.kernelModules = ["kvm-amd"];

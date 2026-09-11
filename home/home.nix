@@ -97,7 +97,6 @@ in {
         siyuan
         spotify
         onedrive
-        firefox
         qt6Packages.qt6ct
         qqmusicScaled
       ]
@@ -201,7 +200,12 @@ in {
   waytrue.tmux.enable = true;
 
   home.stateVersion = "25.05";
-  home.sessionVariables.XMODIFIERS = "@im=fcitx";
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+    TERMINAL = "kitty";
+    XMODIFIERS = "@im=fcitx";
+  };
 
   xdg.configFile = lib.mkIf isLinux {
     "fcitx5/profile".text = ''
@@ -229,7 +233,12 @@ in {
         pkgs.writeText "default.custom.yaml" "patch:\n  schema_list:\n    - schema: double_pinyin_flypy\n"
     } "$rime_dir/default.custom.yaml"
       run ${pkgs.coreutils}/bin/install -m 0644 ${
-        pkgs.writeText "double_pinyin_flypy.custom.yaml" "patch:\n  switches/@2/reset: 1\n"
+        pkgs.writeText "double_pinyin_flypy.custom.yaml" ''
+          patch:
+            switches/@2/reset: 1
+            punctuator/import_preset: symbols
+            recognizer/patterns/punct: "^/([0-9]0?|[A-Za-z]*)$"
+        ''
     } "$rime_dir/double_pinyin_flypy.custom.yaml"
   ''
 );
@@ -238,12 +247,12 @@ in {
   xdg.mimeApps = lib.mkIf isLinux {
     enable = true;
     defaultApplications = {
-      "application/xhtml+xml" = "microsoft-edge.desktop";
-      "text/html" = "microsoft-edge.desktop";
-      "text/xml" = "microsoft-edge.desktop";
-      "x-scheme-handler/ftp" = "microsoft-edge.desktop";
-      "x-scheme-handler/http" = "microsoft-edge.desktop";
-      "x-scheme-handler/https" = "microsoft-edge.desktop";
+      "application/xhtml+xml" = "zen.desktop";
+      "text/html" = "zen.desktop";
+      "text/xml" = "zen.desktop";
+      "x-scheme-handler/ftp" = "zen.desktop";
+      "x-scheme-handler/http" = "zen.desktop";
+      "x-scheme-handler/https" = "zen.desktop";
     };
   };
 

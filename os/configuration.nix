@@ -187,7 +187,7 @@
     [
       vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       wget
-      microsoft-edge
+      inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
       wechat-uos
       wl-clipboard
       gcc

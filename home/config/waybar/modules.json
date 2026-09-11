@@ -25,11 +25,8 @@
         "ignore-list": [
            "Alacritty"
         ],
-        "app_ids-mapping": {
-            "firefoxdeveloperedition": "firefox-developer-edition"
-        },
+        "app_ids-mapping": {},
         "rewrite": {
-            "Firefox Web Browser": "Firefox",
             "Foot Server": "Terminal"
         }
     },
